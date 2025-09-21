@@ -1,0 +1,13 @@
+{
+  "name": "convex",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "convex dev",
+    "deploy": "convex deploy",
+    "seed": "convex run scripts/seed:all"
+  },
+  "dependencies": {
+    "convex": "^1.8.0"
+  }
+}
