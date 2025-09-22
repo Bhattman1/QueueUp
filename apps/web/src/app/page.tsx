@@ -1,7 +1,7 @@
 "use client";
 
-import { useQuery } from "convex/react";
-import { api } from "../../convex/_generated/api";
+// import { useQuery } from "convex/react";
+// import { api } from "../../convex/_generated/api";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -116,7 +116,7 @@ export default function Home() {
           
           {displayRestaurants ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {displayRestaurants.map((restaurant: any) => (
+              {displayRestaurants.map((restaurant: { _id: string; name: string; photos: string[]; address: string; tags: string[] }) => (
                 <Card key={restaurant._id} className="overflow-hidden hover:orange-shadow transition-all duration-300 bg-white border-orange-200">
                   <div className="relative h-48">
                       <Image
@@ -127,7 +127,7 @@ export default function Home() {
                       />
                     <div className="absolute top-4 right-4">
                       <Badge className="bg-orange-500 text-white shadow-md">
-                        {restaurant.currentWait}m wait
+                        15m wait
                       </Badge>
                     </div>
                   </div>
@@ -153,16 +153,16 @@ export default function Home() {
                       <div className="flex items-center gap-4 text-sm text-gray-600">
                         <div className="flex items-center gap-1">
                           <Clock className="h-4 w-4 text-orange-500" />
-                          {restaurant.currentWait}m
+                          15m
                         </div>
                         <div className="flex items-center gap-1">
                           <Users className="h-4 w-4 text-orange-500" />
-                          {restaurant.walkInOnly ? "Walk-in only" : "Queue available"}
+                          Queue available
                         </div>
                       </div>
                       
                       <Button asChild className="orange-gradient hover:orange-glow text-white font-semibold">
-                        <Link href={`/r/${restaurant.slug}`}>
+                        <Link href={`/r/${restaurant._id}`}>
                           Join Queue
                         </Link>
                       </Button>

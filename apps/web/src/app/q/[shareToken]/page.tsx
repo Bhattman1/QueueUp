@@ -1,11 +1,11 @@
 "use client";
 
-import { useQuery, useMutation } from "convex/react";
-import { api } from "../../../../convex/_generated/api";
+// import { useQuery, useMutation } from "convex/react";
+// import { api } from "../../../../convex/_generated/api";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+// import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Clock, Users, MapPin, Phone, Share2, Bell } from "lucide-react";
+import { MapPin, Phone, Share2, Bell } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -57,7 +57,7 @@ export default function StatusPage({ params }: StatusPageProps) {
         alert("Your place in the queue has been cancelled! (Demo mode)");
         return;
       }
-      await cancelEntry({ entryId: displayEntry._id });
+      // await cancelEntry({ entryId: displayEntry._id });
       alert("Your place in the queue has been cancelled.");
     } catch (error) {
       console.error("Failed to cancel entry:", error);
@@ -75,7 +75,7 @@ export default function StatusPage({ params }: StatusPageProps) {
           text: `I'm in the queue at ${displayEntry?.name || "the restaurant"}. Track my position here!`,
           url: window.location.href,
         });
-      } catch (error) {
+      } catch {
         // User cancelled or error occurred
       }
     } else {

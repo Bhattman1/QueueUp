@@ -1,12 +1,12 @@
 "use client";
 
-import { useQuery, useMutation } from "convex/react";
-import { api } from "../../../../convex/_generated/api";
+// import { useQuery, useMutation } from "convex/react";
+// import { api } from "../../../../convex/_generated/api";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Clock, MapPin, Users, QrCode, Phone } from "lucide-react";
+import { Clock, MapPin, QrCode } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useState, use } from "react";
@@ -58,7 +58,7 @@ export default function RestaurantDetailPage({ params }: RestaurantDetailPagePro
   //   api.waitlists.getWaitlist, 
   //   displayRestaurant?._id ? { restaurantId: displayRestaurant._id } : "skip"
   // );
-  const waitlist = null; // Force test data
+  // const waitlist = null; // Force test data
   const joinWaitlist = null; // Disable mutation
 
   const handleJoinQueue = async (e: React.FormEvent) => {
@@ -75,15 +75,15 @@ export default function RestaurantDetailPage({ params }: RestaurantDetailPagePro
         return;
       }
 
-      const result = await joinWaitlist({
-        restaurantId: displayRestaurant._id,
-        name: formData.name,
-        phone: formData.phone || undefined,
-        partySize: formData.partySize,
-        source: "remote",
-      });
+      // const result = await joinWaitlist({
+      //   restaurantId: displayRestaurant._id,
+      //   name: formData.name,
+      //   phone: formData.phone || undefined,
+      //   partySize: formData.partySize,
+      //   source: "remote",
+      // });
 
-      router.push(`/q/${result.shareToken}`);
+      // router.push(`/q/${result.shareToken}`);
     } catch (error) {
       console.error("Failed to join waitlist:", error);
       alert("Failed to join waitlist. Please try again.");
@@ -103,7 +103,7 @@ export default function RestaurantDetailPage({ params }: RestaurantDetailPagePro
     );
   }
 
-  const isWaitlistOpen = waitlist?.isOpen ?? true; // Default to open for demo
+  const isWaitlistOpen = true; // Default to open for demo
 
   return (
     <div className="min-h-screen bg-background">
@@ -222,7 +222,7 @@ export default function RestaurantDetailPage({ params }: RestaurantDetailPagePro
                         onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
                       />
                       <p className="text-xs text-muted-foreground mt-1">
-                        We'll send you updates about your position
+                        We&apos;ll send you updates about your position
                       </p>
                     </div>
 

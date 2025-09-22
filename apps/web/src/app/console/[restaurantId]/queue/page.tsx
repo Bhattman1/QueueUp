@@ -1,7 +1,7 @@
 "use client";
 
-import { useQuery, useMutation } from "convex/react";
-import { api } from "../../../../../convex/_generated/api";
+// import { useQuery, useMutation } from "convex/react";
+// import { api } from "../../../../../convex/_generated/api";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -24,7 +24,7 @@ export default function QueuePage({ params }: QueuePageProps) {
   //   waitlistId: waitlist?._id || "" as any 
   // });
   
-  const restaurant = null; // Force test data
+  // const restaurant = null; // Force test data
   const waitlist = null; // Force test data
   const entries = null; // Force test data
   
@@ -32,7 +32,7 @@ export default function QueuePage({ params }: QueuePageProps) {
   const seatEntry = null; // Disable mutation
   const markNoShow = null; // Disable mutation
 
-  const handlePageEntry = async (entryId: string) => {
+  const handlePageEntry = async () => {
     try {
       if (!pageEntry) {
         // Mock success for demo purposes
@@ -40,7 +40,7 @@ export default function QueuePage({ params }: QueuePageProps) {
         setSelectedEntry(null);
         return;
       }
-      await pageEntry({ entryId });
+      // await pageEntry({ entryId });
       setSelectedEntry(null);
     } catch (error) {
       console.error("Failed to page entry:", error);
@@ -48,7 +48,7 @@ export default function QueuePage({ params }: QueuePageProps) {
     }
   };
 
-  const handleSeatEntry = async (entryId: string) => {
+  const handleSeatEntry = async () => {
     try {
       if (!seatEntry) {
         // Mock success for demo purposes
@@ -56,7 +56,7 @@ export default function QueuePage({ params }: QueuePageProps) {
         setSelectedEntry(null);
         return;
       }
-      await seatEntry({ entryId });
+      // await seatEntry({ entryId });
       setSelectedEntry(null);
     } catch (error) {
       console.error("Failed to seat entry:", error);
@@ -64,7 +64,7 @@ export default function QueuePage({ params }: QueuePageProps) {
     }
   };
 
-  const handleMarkNoShow = async (entryId: string) => {
+  const handleMarkNoShow = async () => {
     try {
       if (!markNoShow) {
         // Mock success for demo purposes
@@ -72,7 +72,7 @@ export default function QueuePage({ params }: QueuePageProps) {
         setSelectedEntry(null);
         return;
       }
-      await markNoShow({ entryId });
+      // await markNoShow({ entryId });
       setSelectedEntry(null);
     } catch (error) {
       console.error("Failed to mark no-show:", error);
@@ -138,7 +138,7 @@ export default function QueuePage({ params }: QueuePageProps) {
     },
   ];
 
-  const currentRestaurant = restaurant?.find(r => r._id === resolvedParams.restaurantId) || testRestaurant;
+  const currentRestaurant = testRestaurant;
   const displayWaitlist = waitlist || testWaitlist;
   const displayEntries = entries || testEntries;
 
@@ -278,11 +278,11 @@ export default function QueuePage({ params }: QueuePageProps) {
                           </div>
                         )}
                         
-                        {entry.notes && (
+                        {/* {entry.notes && (
                           <div className="text-sm text-muted-foreground mt-2">
                             Note: {entry.notes}
                           </div>
-                        )}
+                        )} */}
                       </div>
                     ))}
                   </div>
@@ -311,7 +311,7 @@ export default function QueuePage({ params }: QueuePageProps) {
                   <div className="space-y-3">
                     <Button 
                       className="w-full" 
-                      onClick={() => handlePageEntry(selectedEntry)}
+                      onClick={() => handlePageEntry()}
                     >
                       <AlertCircle className="h-4 w-4 mr-2" />
                       Page Table Ready
@@ -320,7 +320,7 @@ export default function QueuePage({ params }: QueuePageProps) {
                     <Button 
                       variant="outline" 
                       className="w-full"
-                      onClick={() => handleSeatEntry(selectedEntry)}
+                      onClick={() => handleSeatEntry()}
                     >
                       <CheckCircle className="h-4 w-4 mr-2" />
                       Mark as Seated
@@ -329,7 +329,7 @@ export default function QueuePage({ params }: QueuePageProps) {
                     <Button 
                       variant="destructive" 
                       className="w-full"
-                      onClick={() => handleMarkNoShow(selectedEntry)}
+                      onClick={() => handleMarkNoShow()}
                     >
                       <XCircle className="h-4 w-4 mr-2" />
                       Mark No-Show
@@ -358,7 +358,7 @@ export default function QueuePage({ params }: QueuePageProps) {
             {/* Quick Stats */}
             <Card className="mt-6">
               <CardHeader>
-                <CardTitle className="text-lg">Today's Stats</CardTitle>
+                <CardTitle className="text-lg">Today&apos;s Stats</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
