@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Clock, Users, Phone, MoreHorizontal, CheckCircle, XCircle, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { useState, use } from "react";
+import { useUser } from "@clerk/nextjs";
 
 interface QueuePageProps {
   params: Promise<{ restaurantId: string }>;

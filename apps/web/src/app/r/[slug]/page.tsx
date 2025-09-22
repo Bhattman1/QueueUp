@@ -12,6 +12,7 @@ import Image from "next/image";
 import { useState, use } from "react";
 import { useRouter } from "next/navigation";
 import { QRCodeComponent } from "@/components/qr-code";
+import { useUser } from "@clerk/nextjs";
 
 interface RestaurantDetailPageProps {
   params: Promise<{ slug: string }>;
@@ -20,6 +21,8 @@ interface RestaurantDetailPageProps {
 export default function RestaurantDetailPage({ params }: RestaurantDetailPageProps) {
   const router = useRouter();
   const resolvedParams = use(params);
+  const { user, isSignedIn } = useUser();
+  const currentUser = useQuery(api.users.getCurrentUser);
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -115,9 +118,11 @@ export default function RestaurantDetailPage({ params }: RestaurantDetailPagePro
               Queue Up
             </Link>
             <nav className="flex items-center space-x-4">
-              <Link href="/console" className="text-sm font-medium hover:text-primary">
-                Restaurant Console
-              </Link>
+              {(currentUser?.role === "admin" || currentUser?.role === "restaurant_owner") && (
+                <Link href="/console" className="text-sm font-medium hover:text-primary">
+                  Restaurant Console
+                </Link>
+              )}
             </nav>
           </div>
         </div>

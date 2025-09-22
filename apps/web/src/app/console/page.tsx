@@ -8,8 +8,12 @@ import { Button } from "@/components/ui/button";
 import { Clock, MapPin, Users, Settings } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { useUser } from "@clerk/nextjs";
 
 export default function ConsolePage() {
+  const { user, isSignedIn } = useUser();
+  const currentUser = useQuery(api.users.getCurrentUser);
+  
   // Temporarily disable database query to force test data
   // const restaurants = useQuery(api.restaurants.getRestaurants, {});
   const restaurants = null; // Force test data
@@ -43,6 +47,34 @@ export default function ConsolePage() {
   ];
 
   const displayRestaurants = restaurants || testRestaurants;
+
+  // Check if user has access to console
+  if (!isSignedIn || !currentUser || (currentUser.role !== "admin" && currentUser.role !== "restaurant_owner")) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <Card className="p-8 max-w-md w-full">
+          <h1 className="text-2xl font-bold text-center mb-4">Access Denied</h1>
+          <p className="text-center text-gray-600 mb-6">
+            You need restaurant owner or admin privileges to access the console.
+          </p>
+          <div className="space-y-2">
+            <Link href="/" className="block">
+              <Button className="w-full">
+                Back to Home
+              </Button>
+            </Link>
+            {!isSignedIn && (
+              <Link href="/sign-in" className="block">
+                <Button variant="outline" className="w-full">
+                  Sign In
+                </Button>
+              </Link>
+            )}
+          </div>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">

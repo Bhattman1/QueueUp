@@ -8,67 +8,41 @@ import { Button } from "@/components/ui/button";
 import { Clock, MapPin, Users } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { useUser } from "@clerk/nextjs";
 
 export default function Home() {
+  const { user, isSignedIn } = useUser();
+  const currentUser = useQuery(api.users.getCurrentUser);
+  
   // Temporarily disable database query to force test data
   // const restaurants = useQuery(api.restaurants.getTrendingRestaurants, {});
   const restaurants = null; // Force test data
   
-  // Temporary hardcoded data with real restaurant images
+  // Temporary hardcoded data for testing images
   const testRestaurants = [
     {
       _id: "test1",
       name: "Chin Chin",
       address: "125 Flinders Ln, Melbourne VIC 3000",
-      photos: ["https://via.placeholder.com/600x400/ff9100/ffffff?text=Chin+Chin"],
+      photos: ["data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZWY0NDQ0Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5DaGluIENoaW48L3RleHQ+PC9zdmc+"],
       currentWait: 15,
-      tags: ["Asian", "Modern", "Trendy"],
-      walkInOnly: false
+      tags: ["Asian", "Modern", "Trendy"]
     },
     {
       _id: "test2", 
       name: "Cumulus Inc.",
       address: "45 Flinders Ln, Melbourne VIC 3000",
-      photos: ["https://via.placeholder.com/600x400/ff6b35/ffffff?text=Cumulus+Inc"],
+      photos: ["data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjM2I4MmY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5DdW11bHVzIEluYy48L3RleHQ+PC9zdmc+"],
       currentWait: 20,
-      tags: ["Modern Australian", "Breakfast", "Coffee"],
-      walkInOnly: false
+      tags: ["Modern Australian", "Breakfast", "Coffee"]
     },
     {
       _id: "test3",
       name: "Pellegrini's Espresso Bar", 
       address: "66 Bourke St, Melbourne VIC 3000",
-      photos: ["https://via.placeholder.com/600x400/ff8c42/ffffff?text=Pellegrini%27s"],
+      photos: ["data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMTBiOTgxIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5QZWxsZWdyaW5pJ3M8L3RleHQ+PC9zdmc+"],
       currentWait: 5,
-      tags: ["Coffee", "Italian", "Historic"],
-      walkInOnly: true
-    },
-    {
-      _id: "test4",
-      name: "Attica",
-      address: "74 Glen Eira Rd, Ripponlea VIC 3185",
-      photos: ["https://via.placeholder.com/600x400/ff9f40/ffffff?text=Attica"],
-      currentWait: 45,
-      tags: ["Fine Dining", "Australian", "Award Winning"],
-      walkInOnly: false
-    },
-    {
-      _id: "test5",
-      name: "Lune Croissanterie",
-      address: "119 Rose St, Fitzroy VIC 3065",
-      photos: ["https://via.placeholder.com/600x400/ffb366/ffffff?text=Lune"],
-      currentWait: 25,
-      tags: ["Pastry", "Coffee", "Artisan"],
-      walkInOnly: false
-    },
-    {
-      _id: "test6",
-      name: "Supernormal",
-      address: "180 Flinders Ln, Melbourne VIC 3000",
-      photos: ["https://via.placeholder.com/600x400/ffcc80/ffffff?text=Supernormal"],
-      currentWait: 30,
-      tags: ["Asian Fusion", "Modern", "Trendy"],
-      walkInOnly: false
+      tags: ["Coffee", "Italian", "Historic"]
     }
   ];
 
@@ -84,9 +58,11 @@ export default function Home() {
               <h1 className="text-2xl font-bold text-orange-gradient">Queue Up</h1>
             </div>
             <nav className="flex items-center space-x-4">
-              <Link href="/console" className="text-sm font-medium text-gray-600 hover:text-orange-500 transition-colors">
-                Restaurant Console
-              </Link>
+              {(currentUser?.role === "admin" || currentUser?.role === "restaurant_owner") && (
+                <Link href="/console" className="text-sm font-medium text-gray-600 hover:text-orange-500 transition-colors">
+                  Restaurant Console
+                </Link>
+              )}
             </nav>
           </div>
         </div>
@@ -119,12 +95,12 @@ export default function Home() {
               {displayRestaurants.map((restaurant: any) => (
                 <Card key={restaurant._id} className="overflow-hidden hover:orange-shadow transition-all duration-300 bg-white border-orange-200">
                   <div className="relative h-48">
-                      <Image
-                        src={restaurant.photos[0] || "https://via.placeholder.com/600x400/ff9100/ffffff?text=Restaurant"}
-                        alt={restaurant.name}
-                        fill
-                        className="object-cover"
-                      />
+                    <Image
+                      src={restaurant.photos[0] || "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjNjY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5SZXN0YXVyYW50PC90ZXh0Pjwvc3ZnPg=="}
+                      alt={restaurant.name}
+                      fill
+                      className="object-cover"
+                    />
                     <div className="absolute top-4 right-4">
                       <Badge className="bg-orange-500 text-white shadow-md">
                         {restaurant.currentWait}m wait

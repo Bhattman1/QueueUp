@@ -6,6 +6,7 @@ export default defineSchema({
     clerkId: v.string(),
     name: v.string(),
     email: v.string(),
+    role: v.union(v.literal("admin"), v.literal("restaurant_owner"), v.literal("customer")),
     createdAt: v.number(),
   }).index("by_clerk_id", ["clerkId"]),
 
@@ -38,11 +39,13 @@ export default defineSchema({
       bufferMins: v.number(),
       pagingMessage: v.string(),
     }),
+    isActive: v.optional(v.boolean()), // Admin can deactivate restaurants
     createdAt: v.number(),
   })
     .index("by_slug", ["slug"])
     .index("by_org", ["orgId"])
-    .index("by_geo", ["geo.lat", "geo.lng"]),
+    .index("by_geo", ["geo.lat", "geo.lng"])
+    .index("by_active", ["isActive"]),
 
   waitlists: defineTable({
     restaurantId: v.id("restaurants"),

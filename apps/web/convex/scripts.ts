@@ -192,6 +192,7 @@ export const seedRestaurants = mutation({
       clerkId: "demo-user-123",
       name: "Demo Restaurant Owner",
       email: "demo@queueup.com",
+      role: "restaurant_owner",
       createdAt: Date.now(),
     });
 
@@ -213,6 +214,7 @@ export const seedRestaurants = mutation({
           bufferMins: 10,
           pagingMessage: "Your table is ready! Please return within 10 minutes.",
         },
+        isActive: true,
         createdAt: Date.now(),
       });
       restaurantIds.push(restaurantId);
@@ -261,5 +263,32 @@ export const seedRestaurants = mutation({
     }
 
     return { success: true, restaurantsCreated: restaurantIds.length };
+  },
+});
+
+export const createAdminUser = mutation({
+  args: {
+    clerkId: v.string(),
+    name: v.string(),
+    email: v.string(),
+  },
+  handler: async (ctx, args) => {
+    // Check if admin user already exists
+    const existingAdmin = await ctx.db
+      .query("users")
+      .filter((q) => q.eq(q.field("role"), "admin"))
+      .first();
+
+    if (existingAdmin) {
+      throw new Error("Admin user already exists");
+    }
+
+    return await ctx.db.insert("users", {
+      clerkId: args.clerkId,
+      name: args.name,
+      email: args.email,
+      role: "admin",
+      createdAt: Date.now(),
+    });
   },
 });
