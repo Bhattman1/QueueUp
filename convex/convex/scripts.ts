@@ -184,6 +184,26 @@ const melbourneRestaurants = [
   },
 ];
 
+export const updateRestaurantPhotos = mutation({
+  args: {},
+  handler: async (ctx) => {
+    // Get all restaurants
+    const restaurants = await ctx.db.query("restaurants").collect();
+    
+    // Update photos for each restaurant
+    for (let i = 0; i < restaurants.length; i++) {
+      const restaurant = restaurants[i];
+      const restaurantData = melbourneRestaurants[i % melbourneRestaurants.length];
+      
+      await ctx.db.patch(restaurant._id, {
+        photos: restaurantData.photos,
+      });
+    }
+
+    return { success: true, restaurantsUpdated: restaurants.length };
+  },
+});
+
 export const seedRestaurants = mutation({
   args: {},
   handler: async (ctx) => {

@@ -10,19 +10,81 @@ import Link from "next/link";
 import Image from "next/image";
 
 export default function Home() {
-  const restaurants = useQuery(api.restaurants.getTrendingRestaurants, {});
+  // Temporarily disable database query to force test data
+  // const restaurants = useQuery(api.restaurants.getTrendingRestaurants, {});
+  const restaurants = null; // Force test data
+  
+  // Temporary hardcoded data with real restaurant images
+  const testRestaurants = [
+    {
+      _id: "test1",
+      name: "Chin Chin",
+      address: "125 Flinders Ln, Melbourne VIC 3000",
+      photos: ["https://via.placeholder.com/600x400/ff9100/ffffff?text=Chin+Chin"],
+      currentWait: 15,
+      tags: ["Asian", "Modern", "Trendy"],
+      walkInOnly: false
+    },
+    {
+      _id: "test2", 
+      name: "Cumulus Inc.",
+      address: "45 Flinders Ln, Melbourne VIC 3000",
+      photos: ["https://via.placeholder.com/600x400/ff6b35/ffffff?text=Cumulus+Inc"],
+      currentWait: 20,
+      tags: ["Modern Australian", "Breakfast", "Coffee"],
+      walkInOnly: false
+    },
+    {
+      _id: "test3",
+      name: "Pellegrini's Espresso Bar", 
+      address: "66 Bourke St, Melbourne VIC 3000",
+      photos: ["https://via.placeholder.com/600x400/ff8c42/ffffff?text=Pellegrini%27s"],
+      currentWait: 5,
+      tags: ["Coffee", "Italian", "Historic"],
+      walkInOnly: true
+    },
+    {
+      _id: "test4",
+      name: "Attica",
+      address: "74 Glen Eira Rd, Ripponlea VIC 3185",
+      photos: ["https://via.placeholder.com/600x400/ff9f40/ffffff?text=Attica"],
+      currentWait: 45,
+      tags: ["Fine Dining", "Australian", "Award Winning"],
+      walkInOnly: false
+    },
+    {
+      _id: "test5",
+      name: "Lune Croissanterie",
+      address: "119 Rose St, Fitzroy VIC 3065",
+      photos: ["https://via.placeholder.com/600x400/ffb366/ffffff?text=Lune"],
+      currentWait: 25,
+      tags: ["Pastry", "Coffee", "Artisan"],
+      walkInOnly: false
+    },
+    {
+      _id: "test6",
+      name: "Supernormal",
+      address: "180 Flinders Ln, Melbourne VIC 3000",
+      photos: ["https://via.placeholder.com/600x400/ffcc80/ffffff?text=Supernormal"],
+      currentWait: 30,
+      tags: ["Asian Fusion", "Modern", "Trendy"],
+      walkInOnly: false
+    }
+  ];
+
+  const displayRestaurants = restaurants || testRestaurants;
 
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="border-b border-orange-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <h1 className="text-2xl font-bold text-primary">Queue Up</h1>
+              <h1 className="text-2xl font-bold text-orange-gradient">Queue Up</h1>
             </div>
             <nav className="flex items-center space-x-4">
-              <Link href="/console" className="text-sm font-medium hover:text-primary">
+              <Link href="/console" className="text-sm font-medium text-gray-600 hover:text-orange-500 transition-colors">
                 Restaurant Console
               </Link>
             </nav>
@@ -31,49 +93,49 @@ export default function Home() {
       </header>
 
       {/* Hero Section */}
-      <section className="py-12 bg-gradient-to-b from-primary/5 to-background">
+      <section className="py-16 orange-gradient-light">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-4xl font-bold tracking-tight mb-4">
+          <h2 className="text-5xl font-bold tracking-tight mb-6 text-gray-800">
             Skip the wait, join the queue
           </h2>
-          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
             Join restaurant waitlists digitally and get real-time updates on your position and estimated wait time.
           </p>
-          <div className="flex flex-wrap justify-center gap-2 mb-8">
-            <Badge variant="secondary">Trending</Badge>
-            <Badge variant="secondary">Queue Up Only</Badge>
-            <Badge variant="secondary">Local Favorites</Badge>
+          <div className="flex flex-wrap justify-center gap-3 mb-8">
+            <Badge className="bg-orange-500 text-white hover:bg-orange-600 transition-colors">Trending</Badge>
+            <Badge className="bg-orange-500 text-white hover:bg-orange-600 transition-colors">Queue Up Only</Badge>
+            <Badge className="bg-orange-500 text-white hover:bg-orange-600 transition-colors">Local Favorites</Badge>
           </div>
         </div>
       </section>
 
       {/* Restaurants Grid */}
-      <section className="py-12">
+      <section className="py-12 bg-gray-50">
         <div className="container mx-auto px-4">
-          <h3 className="text-2xl font-bold mb-8">Popular Restaurants</h3>
+          <h3 className="text-3xl font-bold mb-8 text-gray-800 text-center">Popular Restaurants</h3>
           
-          {restaurants ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {restaurants.map((restaurant: any) => (
-                <Card key={restaurant._id} className="overflow-hidden hover:shadow-lg transition-shadow">
+          {displayRestaurants ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {displayRestaurants.map((restaurant: any) => (
+                <Card key={restaurant._id} className="overflow-hidden hover:orange-shadow transition-all duration-300 bg-white border-orange-200">
                   <div className="relative h-48">
-                    <Image
-                      src={restaurant.photos[0] || "/restaurant.jpg"}
-                      alt={restaurant.name}
-                      fill
-                      className="object-cover"
-                    />
+                      <Image
+                        src={restaurant.photos[0] || "https://via.placeholder.com/600x400/ff9100/ffffff?text=Restaurant"}
+                        alt={restaurant.name}
+                        fill
+                        className="object-cover"
+                      />
                     <div className="absolute top-4 right-4">
-                      <Badge variant="secondary" className="bg-background/80">
+                      <Badge className="bg-orange-500 text-white shadow-md">
                         {restaurant.currentWait}m wait
                       </Badge>
                     </div>
                   </div>
                   
                   <CardHeader>
-                    <CardTitle className="text-xl">{restaurant.name}</CardTitle>
-                    <CardDescription className="flex items-center gap-1">
-                      <MapPin className="h-4 w-4" />
+                    <CardTitle className="text-xl text-gray-800">{restaurant.name}</CardTitle>
+                    <CardDescription className="flex items-center gap-1 text-gray-600">
+                      <MapPin className="h-4 w-4 text-orange-500" />
                       {restaurant.address}
                     </CardDescription>
                   </CardHeader>
@@ -81,25 +143,25 @@ export default function Home() {
                   <CardContent>
                     <div className="flex flex-wrap gap-2 mb-4">
                       {restaurant.tags.map((tag: string) => (
-                        <Badge key={tag} variant="outline" className="text-xs">
+                        <Badge key={tag} className="text-xs bg-orange-100 text-orange-700 border-orange-200">
                           {tag}
                         </Badge>
                       ))}
                     </div>
                     
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                      <div className="flex items-center gap-4 text-sm text-gray-600">
                         <div className="flex items-center gap-1">
-                          <Clock className="h-4 w-4" />
+                          <Clock className="h-4 w-4 text-orange-500" />
                           {restaurant.currentWait}m
                         </div>
                         <div className="flex items-center gap-1">
-                          <Users className="h-4 w-4" />
+                          <Users className="h-4 w-4 text-orange-500" />
                           {restaurant.walkInOnly ? "Walk-in only" : "Queue available"}
                         </div>
                       </div>
                       
-                      <Button asChild>
+                      <Button asChild className="orange-gradient hover:orange-glow text-white font-semibold">
                         <Link href={`/r/${restaurant.slug}`}>
                           Join Queue
                         </Link>
@@ -111,16 +173,16 @@ export default function Home() {
             </div>
           ) : (
             <div className="text-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-              <p className="text-muted-foreground">Loading restaurants...</p>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto mb-4"></div>
+              <p className="text-gray-600">Loading restaurants...</p>
             </div>
           )}
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t py-8">
-        <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
+      <footer className="border-t border-orange-200 py-8 bg-white">
+        <div className="container mx-auto px-4 text-center text-sm text-gray-600">
           <p>&copy; 2024 Queue Up. Skip the wait, join the queue.</p>
         </div>
       </footer>

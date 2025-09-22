@@ -16,16 +16,48 @@ interface StatusPageProps {
 export default function StatusPage({ params }: StatusPageProps) {
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   
-  const entry = useQuery(api.waitlists.getEntryByShareToken, { shareToken: params.shareToken });
-  const cancelEntry = useMutation(api.waitlists.cancelEntry);
+  // Temporarily disable database queries due to connection issues
+  // const entry = useQuery(api.waitlists.getEntryByShareToken, { shareToken: params.shareToken });
+  // const cancelEntry = useMutation(api.waitlists.cancelEntry);
+  
+  const entry = null; // Force test data
+  const cancelEntry = null; // Disable mutation
+
+  // Test data for demo
+  const testEntry = {
+    _id: "test-entry",
+    waitlistId: "test-waitlist",
+    name: "John Smith",
+    phone: "+61412345678",
+    partySize: 2,
+    joinSource: "remote",
+    joinAt: Date.now() - (30 * 60 * 1000), // 30 minutes ago
+    status: "waiting",
+    quotedMins: 15,
+    etaMins: 10,
+    position: 1,
+    shareToken: params.shareToken,
+    updates: [{
+      ts: Date.now() - (30 * 60 * 1000),
+      type: "joined",
+      meta: { source: "remote" },
+    }],
+  };
+
+  const displayEntry = entry || testEntry;
 
   const handleCancel = async () => {
-    if (!entry || !confirm("Are you sure you want to cancel your place in the queue?")) {
+    if (!displayEntry || !confirm("Are you sure you want to cancel your place in the queue?")) {
       return;
     }
 
     try {
-      await cancelEntry({ entryId: entry._id });
+      if (!cancelEntry) {
+        // Mock success for demo purposes
+        alert("Your place in the queue has been cancelled! (Demo mode)");
+        return;
+      }
+      await cancelEntry({ entryId: displayEntry._id });
       alert("Your place in the queue has been cancelled.");
     } catch (error) {
       console.error("Failed to cancel entry:", error);
@@ -40,7 +72,7 @@ export default function StatusPage({ params }: StatusPageProps) {
       try {
         await navigator.share({
           title: "My Queue Status - Queue Up",
-          text: `I'm in the queue at ${entry?.name || "the restaurant"}. Track my position here!`,
+          text: `I'm in the queue at ${displayEntry?.name || "the restaurant"}. Track my position here!`,
           url: window.location.href,
         });
       } catch (error) {
@@ -57,12 +89,12 @@ export default function StatusPage({ params }: StatusPageProps) {
     }
   };
 
-  if (!entry) {
+  if (!displayEntry) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading your queue status...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading your queue status...</p>
         </div>
       </div>
     );
@@ -70,8 +102,8 @@ export default function StatusPage({ params }: StatusPageProps) {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "waiting": return "bg-blue-500";
-      case "paged": return "bg-yellow-500";
+      case "waiting": return "bg-orange-500";
+      case "paged": return "bg-orange-400";
       case "seated": return "bg-green-500";
       case "no_show": return "bg-red-500";
       case "cancelled": return "bg-gray-500";
@@ -91,15 +123,15 @@ export default function StatusPage({ params }: StatusPageProps) {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="border-b border-orange-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Link href="/" className="text-2xl font-bold text-primary">
+            <Link href="/" className="text-2xl font-bold text-orange-gradient">
               Queue Up
             </Link>
-            <Button variant="outline" size="sm" onClick={handleShare}>
+            <Button variant="outline" size="sm" onClick={handleShare} className="border-orange-200 text-orange-600 hover:bg-orange-50">
               <Share2 className="h-4 w-4 mr-2" />
               Share
             </Button>
@@ -109,57 +141,57 @@ export default function StatusPage({ params }: StatusPageProps) {
 
       <div className="container mx-auto px-4 py-8 max-w-2xl">
         {/* Status Card */}
-        <Card className="mb-6">
+        <Card className="mb-6 bg-white border-orange-200 shadow-lg">
           <CardHeader className="text-center">
             <div className="flex justify-center mb-4">
-              <div className={`w-4 h-4 rounded-full ${getStatusColor(entry.status)}`}></div>
+              <div className={`w-6 h-6 rounded-full ${getStatusColor(displayEntry.status)} shadow-md`}></div>
             </div>
-            <CardTitle className="text-2xl">{getStatusText(entry.status)}</CardTitle>
-            <CardDescription>
-              {entry.status === "waiting" && "You're in the queue"}
-              {entry.status === "paged" && "Please return to the restaurant"}
-              {entry.status === "seated" && "Enjoy your meal!"}
-              {entry.status === "no_show" && "You missed your table"}
-              {entry.status === "cancelled" && "You cancelled your place"}
+            <CardTitle className="text-2xl text-gray-800">{getStatusText(displayEntry.status)}</CardTitle>
+            <CardDescription className="text-gray-600">
+              {displayEntry.status === "waiting" && "You're in the queue"}
+              {displayEntry.status === "paged" && "Please return to the restaurant"}
+              {displayEntry.status === "seated" && "Enjoy your meal!"}
+              {displayEntry.status === "no_show" && "You missed your table"}
+              {displayEntry.status === "cancelled" && "You cancelled your place"}
             </CardDescription>
           </CardHeader>
           
-          {entry.status === "waiting" && (
+          {displayEntry.status === "waiting" && (
             <CardContent className="text-center space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-primary">#{entry.position}</div>
-                  <div className="text-sm text-muted-foreground">Position</div>
+                  <div className="text-3xl font-bold text-orange-500">#{displayEntry.position}</div>
+                  <div className="text-sm text-gray-600">Position</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-primary">{entry.etaMins}m</div>
-                  <div className="text-sm text-muted-foreground">Est. Wait</div>
+                  <div className="text-3xl font-bold text-orange-500">{displayEntry.etaMins}m</div>
+                  <div className="text-sm text-gray-600">Est. Wait</div>
                 </div>
               </div>
               
-              <div className="bg-muted/50 rounded-lg p-4">
-                <div className="text-sm text-muted-foreground mb-2">Party Details</div>
-                <div className="font-medium">{entry.name}</div>
-                <div className="text-sm text-muted-foreground">
-                  {entry.partySize} {entry.partySize === 1 ? 'person' : 'people'}
+              <div className="bg-orange-50 rounded-lg p-4 border border-orange-200">
+                <div className="text-sm text-orange-700 mb-2 font-medium">Party Details</div>
+                <div className="font-medium text-gray-800">{displayEntry.name}</div>
+                <div className="text-sm text-gray-600">
+                  {displayEntry.partySize} {displayEntry.partySize === 1 ? 'person' : 'people'}
                 </div>
-                {entry.phone && (
-                  <div className="text-sm text-muted-foreground flex items-center justify-center gap-1 mt-1">
-                    <Phone className="h-3 w-3" />
-                    {entry.phone}
+                {displayEntry.phone && (
+                  <div className="text-sm text-gray-600 flex items-center justify-center gap-1 mt-1">
+                    <Phone className="h-3 w-3 text-orange-500" />
+                    {displayEntry.phone}
                   </div>
                 )}
               </div>
             </CardContent>
           )}
 
-          {entry.status === "paged" && (
+          {displayEntry.status === "paged" && (
             <CardContent className="text-center space-y-4">
-              <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
-                <div className="text-yellow-800 dark:text-yellow-200 font-medium">
+              <div className="bg-orange-100 border border-orange-300 rounded-lg p-4">
+                <div className="text-orange-800 font-medium">
                   Your table is ready!
                 </div>
-                <div className="text-sm text-yellow-700 dark:text-yellow-300 mt-1">
+                <div className="text-sm text-orange-700 mt-1">
                   Please return to the restaurant within 10 minutes
                 </div>
               </div>
@@ -169,11 +201,11 @@ export default function StatusPage({ params }: StatusPageProps) {
 
         {/* Actions */}
         <div className="space-y-4">
-          {entry.status === "waiting" && (
+          {displayEntry.status === "waiting" && (
             <div className="flex gap-4">
               <Button 
                 variant="outline" 
-                className="flex-1"
+                className="flex-1 border-orange-200 text-orange-600 hover:bg-orange-50"
                 onClick={() => setNotificationsEnabled(!notificationsEnabled)}
               >
                 <Bell className="h-4 w-4 mr-2" />
@@ -189,7 +221,7 @@ export default function StatusPage({ params }: StatusPageProps) {
             </div>
           )}
 
-          <Button variant="outline" className="w-full" asChild>
+          <Button variant="outline" className="w-full border-orange-200 text-orange-600 hover:bg-orange-50" asChild>
             <Link href="/">
               <MapPin className="h-4 w-4 mr-2" />
               Find More Restaurants
@@ -198,25 +230,29 @@ export default function StatusPage({ params }: StatusPageProps) {
         </div>
 
         {/* Recent Updates */}
-        <Card className="mt-6">
+        <Card className="mt-6 bg-white border-orange-200">
           <CardHeader>
-            <CardTitle className="text-lg">Recent Updates</CardTitle>
+            <CardTitle className="text-lg text-gray-800">Recent Updates</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {entry.updates.slice(-3).reverse().map((update, index) => (
+              {displayEntry.updates.slice(-3).reverse().map((update, index) => (
                 <div key={index} className="flex items-center gap-3 text-sm">
-                  <div className="w-2 h-2 bg-primary rounded-full"></div>
+                  <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
                   <div className="flex-1">
-                    <div className="font-medium">
+                    <div className="font-medium text-gray-800">
                       {update.type === "joined" && "Joined the queue"}
                       {update.type === "paged" && "Table ready notification sent"}
                       {update.type === "seated" && "Seated at table"}
                       {update.type === "cancelled" && "Cancelled from queue"}
                       {update.type === "no_show" && "Marked as no-show"}
                     </div>
-                    <div className="text-muted-foreground">
-                      {new Date(update.ts).toLocaleTimeString()}
+                    <div className="text-gray-600">
+                      {new Date(update.ts).toLocaleTimeString('en-US', { 
+                        hour12: true, 
+                        hour: 'numeric', 
+                        minute: '2-digit' 
+                      })}
                     </div>
                   </div>
                 </div>
@@ -226,7 +262,7 @@ export default function StatusPage({ params }: StatusPageProps) {
         </Card>
 
         {/* Footer */}
-        <div className="text-center text-sm text-muted-foreground mt-8">
+        <div className="text-center text-sm text-gray-600 mt-8">
           <p>This page updates automatically</p>
           <p>Share this link to let others track your position</p>
         </div>

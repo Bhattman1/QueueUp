@@ -10,7 +10,39 @@ import Link from "next/link";
 import Image from "next/image";
 
 export default function ConsolePage() {
-  const restaurants = useQuery(api.restaurants.getRestaurants, {});
+  // Temporarily disable database query to force test data
+  // const restaurants = useQuery(api.restaurants.getRestaurants, {});
+  const restaurants = null; // Force test data
+  
+  // Temporary hardcoded data for testing images
+  const testRestaurants = [
+    {
+      _id: "test1",
+      name: "Chin Chin",
+      address: "125 Flinders Ln, Melbourne VIC 3000",
+      photos: ["data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZWY0NDQ0Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5DaGluIENoaW48L3RleHQ+PC9zdmc+"],
+      walkInOnly: false,
+      tags: ["Asian", "Modern", "Trendy"]
+    },
+    {
+      _id: "test2", 
+      name: "Cumulus Inc.",
+      address: "45 Flinders Ln, Melbourne VIC 3000",
+      photos: ["data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjM2I4MmY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5DdW11bHVzIEluYy48L3RleHQ+PC9zdmc+"],
+      walkInOnly: false,
+      tags: ["Modern Australian", "Breakfast", "Coffee"]
+    },
+    {
+      _id: "test3",
+      name: "Pellegrini's Espresso Bar", 
+      address: "66 Bourke St, Melbourne VIC 3000",
+      photos: ["data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMTBiOTgxIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5QZWxsZWdyaW5pJ3M8L3RleHQ+PC9zdmc+"],
+      walkInOnly: true,
+      tags: ["Coffee", "Italian", "Historic"]
+    }
+  ];
+
+  const displayRestaurants = restaurants || testRestaurants;
 
   return (
     <div className="min-h-screen bg-background">
@@ -38,13 +70,13 @@ export default function ConsolePage() {
           </p>
         </div>
 
-        {restaurants ? (
+        {displayRestaurants ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {restaurants.map((restaurant) => (
+            {displayRestaurants.map((restaurant) => (
               <Card key={restaurant._id} className="overflow-hidden hover:shadow-lg transition-shadow">
                 <div className="relative h-48">
                   <Image
-                    src={restaurant.photos[0] || "/restaurant.jpg"}
+                    src={restaurant.photos[0] || "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjNjY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5SZXN0YXVyYW50PC90ZXh0Pjwvc3ZnPg=="}
                     alt={restaurant.name}
                     fill
                     className="object-cover"
